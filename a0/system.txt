@@ -1,0 +1,40 @@
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│  SYSTEMINFORMATION                                                      Version: 5.27.8 │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+
+Operating System:
+──────────────────────────────────────────────────────────────────────────────────────────
+Platform         : Windows
+Distro           : Microsoft Windows 11 Pro
+Release          : 10.0.26100
+Codename         : 
+Kernel           : 10.0.26100
+Arch             : x64
+Hostname         : MUSAB-SLIM-PC
+Codepage         : 437
+Build            : 26100
+Hypervisor       : true
+RemoteSession    : 
+
+System:
+──────────────────────────────────────────────────────────────────────────────────────────
+Manufacturer     : LENOVO
+Model            : 83MC
+Version          : Lenovo Slim 7 14ILL10
+Virtual          : 
+
+CPU:
+──────────────────────────────────────────────────────────────────────────────────────────
+Manufacturer     : Intel
+Brand            : Core™ Ultra 7 258V
+Family           : 6
+Model            : 189
+Stepping         : 1
+Speed            : 2.2
+Cores            : 8
+PhysicalCores    : 8
+PerformanceCores : 8
+EfficiencyCores  : 
+Processors       : 1
+Socket           : BGA2833
+
