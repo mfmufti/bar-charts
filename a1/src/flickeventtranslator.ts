@@ -1,5 +1,6 @@
 import { SKEvent, SKMouseEvent, type EventTranslator, type FundamentalEvent } from "simplekit/canvas-mode";
 
+// variables declared here instead of inside object to enforce privacy
 let startTime = 0, mouseDown = false, startX = 0, startY = 0;
 
 export const flickEventTranslator: EventTranslator = {

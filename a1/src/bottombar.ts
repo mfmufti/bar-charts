@@ -25,6 +25,7 @@ export class BottomBar extends Drawable {
 				setActiveGraph(i);
 			}));
 		}
+
 		this.buttons[0].setActive();
 	}
 
@@ -32,11 +33,13 @@ export class BottomBar extends Drawable {
 		this.rect.draw(gc, {x, y, w, h, color: "lightgray"});
 		this.line.draw(gc, {x1: x, y1: y, x2: x + w, y2: y})
 		
-		let buttonStart = (w - 30 * 10 - 10 * (10 - 1)) / 2;
-		for (let i = 0; i < 10; i++) {
-			let curX = buttonStart + (10 + 15 * 2) * i + 15;
-			let curY = y + 15 + (50 - 30) / 2;
-			this.buttons[i].draw(gc, {x: curX, y: curY, r: 15}, i == 0);
+		const radius = 15, buttonCount = 10;
+		let buttonStart = (w - 2 * radius * buttonCount - 10 * (buttonCount - 1)) / 2;
+
+		for (let i = 0; i < buttonCount; i++) {
+			let curX = buttonStart + (10 + radius * 2) * i + radius;
+			let curY = y + radius + (h - radius * 2) / 2;
+			this.buttons[i].draw(gc, {x: curX, y: curY, r: radius});
 		}
 	}
 
@@ -69,21 +72,24 @@ class Button extends EventDrawable {
 		eventHandler.addClickEvent(this);
 	}
 
-	draw(gc: CanvasRenderingContext2D, {x, y, r}: ButtonOptions, special = false): void {
-		if (special) console.log("animationProgress", this.animationProgress, "active", this.active);
+	draw(gc: CanvasRenderingContext2D, {x, y, r}: ButtonOptions): void {
 		let animated = this.active && this.animationProgress === 1;
 		let animating = this.active && this.animationProgress < 1;
 		let circleColor = animated ? "dodgerblue" : "whitesmoke";
 		let textColor = animated ? "white" : "black";
+
 		this.x = x, this.y = y, this.r = r;
 		if (this.hovered) {
 			this.circle.draw(gc, {x, y, r: r + 4, color: "gold"})
 		}
+
 		this.circle.draw(gc, {x, y, r, color: circleColor, border: !animating});
+
 		if (animating) {
 			this.circle.draw(gc, {x, y, r: r * this.animationProgress, color: "dodgerblue"});
 			this.circle.draw(gc, {x, y, r, border: true, fill: false});
 		}
+
 		this.labelText.draw(gc, {x, y, size: 18, text: this.label, color: textColor});
 	}
 
@@ -110,9 +116,9 @@ class Button extends EventDrawable {
 	setActive(): void {
 		this.active = true;
 	}
-	
+
 	setInactive(): void {
 		this.active = false;
 		this.animationProgress = 1;
-	};
+	}
 }

@@ -25,14 +25,17 @@ export class Chart extends EventDrawable {
 
 	constructor(changePrev: () => void, changeNext: () => void) {
 		super();
+
 		this.changeNext = changeNext;
 		this.changePrev = changePrev;
+
 		for (let i = 0; i < 11; i++) {
 			this.ticks.push(new Line());
 		}
 		for (let i = 0; i < 6; i++) {
 			this.yLabels.push(new Text());
 		}
+
 		eventHandler.addFlickEvent(this);
 	}
 
@@ -49,38 +52,40 @@ export class Chart extends EventDrawable {
 	}
 
 	draw(gc: CanvasRenderingContext2D, {x, y, w, h}: ChartOptions) {
-		this.background.draw(gc, {x, y, w, h, color: "white"});
-		this.xAxis.draw(gc, {x1: x + 60, x2: x + w - 30, y1: y + h - 60, y2: y + h - 60});
+		const margin = 60, marginRight = 30, tickSize = 5, barSpace = 20;
+		const labelCnt = this.yLabels.length, tickCnt = this.ticks.length;
 		
-		this.xAxis.draw(gc, {x1: x + 60, x2: x + w - 30, y1: y + h - 60, y2: y + h - 60});
-		this.yAxis.draw(gc, {x1: x + 60, x2: x + 60, y1: y + 60, y2: y + h - 60});
+		this.background.draw(gc, {x, y, w, h, color: "white"});
+		this.xAxis.draw(gc, {x1: x + margin, x2: x + w - marginRight, y1: y + h - margin, y2: y + h - margin});
+		this.yAxis.draw(gc, {x1: x + margin, x2: x + margin, y1: y + margin, y2: y + h - margin});
 
-		for (let i = 0; i < 11; i++) {
-			let tickY = (h - 60 - 60) / (11 - 1) * i + y + 60;
-			this.ticks[i].draw(gc, {x1: x + 60 - 5, x2: x + 60, y1: tickY, y2: tickY})
+		for (let i = 0; i < tickCnt; i++) {
+			let tickY = (h - margin * 2) / (tickCnt - 1) * i + y + margin;
+			this.ticks[i].draw(gc, {x1: x + margin - tickSize, x2: x + margin, y1: tickY, y2: tickY})
 		}
 
-		for (let i = 0; i < 6; i++) {
-			let labelY = (h - 60 - 60) / (6 - 1) * i + y + 60;
-			this.yLabels[i].draw(gc, {x: x + 60 - 5 - 5, y: labelY, size: 14, text: "" + (100 - i * 20), alignX: "right"});
+		for (let i = 0; i < labelCnt; i++) {
+			let labelY = (h - margin * 2) / (labelCnt - 1) * i + y + margin;
+			this.yLabels[i].draw(gc, {x: x + margin - tickSize * 2, y: labelY, size: 14, text: "" + (100 - i * barSpace), alignX: "right"});
 		}
 
 		if (this.dataset) {
 			let {title, labels, values} = this.dataset;
 			let cnt = labels.length;
-			let barW = ((w - 30 - 60) - 20 * (cnt + 1)) / cnt;
+			let barW = ((w - marginRight - margin) - barSpace * (cnt + 1)) / cnt;
 
-			this.titleText.draw(gc, {x: x + w / 2, y: y + 60 / 2, size: 18, text: title});
+			this.titleText.draw(gc, {x: x + w / 2, y: y + margin / 2, size: 18, text: title});
 
 			labels.forEach((label, i) => {
-				let labelX = x + 60 + (barW + 20) * i + 20 + barW / 2;
-				this.xLabels[i].draw(gc, {x: labelX, y: y + h - 60 + 10, size: 14, text: label, alignY: "top"});
+				let labelX = x + margin + (barW + barSpace) * i + barSpace + barW / 2;
+				this.xLabels[i].draw(gc, {x: labelX, y: y + h - margin + 10, size: 14, text: label, alignY: "top"});
 			});
 
 			values.forEach((value, i) => {
-				let barX = x + 60 + (barW + 20) * i + 20;
-				this.bars[i].draw(gc, {x: barX, y1: y + 60, y2: y + h - 60, w: barW, value, hue: 360 / cnt * i});
+				let barX = x + margin + (barW + barSpace) * i + barSpace;
+				this.bars[i].draw(gc, {x: barX, y1: y + margin, y2: y + h - margin, w: barW, value, hue: 360 / cnt * i});
 			});
+
 			this.outlinedChevron.draw(gc, {x: x + w / 2, y: y + h / 2, dir: this.flickDir});
 		}
 	}
@@ -113,27 +118,35 @@ class ChartBar extends EventDrawable {
 
 	constructor(changeValue: (value: number) => void, animate = true) {
 		super();
+
 		this.changeValue = changeValue;
 		eventHandler.addMouseMoveEvent(this);
 		eventHandler.addFocusEvent(this);
+
 		if (animate) {
 			animator.addJob(1000, (progress: number) => {this.animationProgress = progress}, easeIn);
 		}
 	}
 
 	draw(gc: CanvasRenderingContext2D, {x, y1, y2, w, value, hue}: ChartBarOptions) {
-		let h = (y2 - y1) / 100 * value * this.animationProgress;
-		let color = `hsl(${hue},100%,${this.hovered ? 38 : 50}%)`;
+		const h = (y2 - y1) / 100 * value * this.animationProgress;
+		const color = `hsl(${hue},100%,${this.hovered ? 38 : 50}%)`;
+		const borderWidth = 1;
+		
 		if (this.focused) {
-			this.rect.draw(gc, {x: x - 5, y: y2 - h - 5, w: w + 5 * 2, h: h + 5 * 2, color: "dodgerblue"});
+			const focusWidth = borderWidth + 4;
+			this.rect.draw(gc, {x: x - focusWidth, y: y2 - h - focusWidth, w: w + focusWidth * 2, h: h + focusWidth * 2, color: "dodgerblue"});
 		}
-		this.x1 = x - 1, this.x2 = x + w + 1, this.y1 = y2 - h - 1, this.y2 = y2 + 1, this.value = value;
+
+		this.x1 = x - borderWidth, this.x2 = x + w + borderWidth, this.y1 = y2 - h - borderWidth, this.y2 = y2 + borderWidth, this.value = value;
 		this.rect.draw(gc, {x, y: y2 - h, w, h, color, border: true});
+		
 		if (this.hovered) {
+			const labelSize = 14;
 			if (w > 20 && h > 20) {
-				this.label.draw(gc, {x: x + w / 2, y: y2 - h / 2, size: 14, text: `${value}`, color: "white"});
+				this.label.draw(gc, {x: x + w / 2, y: y2 - h / 2, size: labelSize, text: `${value}`, color: "white"});
 			} else {
-				this.label.draw(gc, {x: x + w / 2, y: y2 - h - 10, size: 14, text: `${value}`, color: "black", alignY: "bottom"});
+				this.label.draw(gc, {x: x + w / 2, y: y2 - h - 10, size: labelSize, text: `${value}`, color: "black", alignY: "bottom"});
 			}
 		}
 	}
@@ -147,6 +160,7 @@ class ChartBar extends EventDrawable {
 
 	handleMouseEnter(): void {this.hovered = true;}
 	handleMouseLeave(): void {this.hovered = false;}
+
 	handleFocus(): void {
 		this.focused = true;
 		eventHandler.addKeyEvent(this);
@@ -160,8 +174,9 @@ class ChartBar extends EventDrawable {
 		if (this.value === undefined) {
 			return;
 		}
-		let lastKey = keys[keys.length - 1];
-		let diff = keys.indexOf("Shift") != -1 ? 10 : 1;
+
+		const lastKey = keys[keys.length - 1];
+		const diff = keys.indexOf("Shift") != -1 ? 10 : 1;
 
 		if (lastKey == "ArrowUp") {
 			this.changeValue(Math.min(100, this.value + diff));
@@ -190,21 +205,26 @@ class OutlinedChevron extends Drawable {
 		if (this.opacity === 0) {
 			return;
 		}
-		let lineColor = `rgba(0,0,0,${this.opacity})`;
-		let backgroundColor = `rgba(211,211,211,${this.opacity})`
+
+		const lineColor = `rgba(0,0,0,${this.opacity})`;
+		const backgroundColor = `rgba(211,211,211,${this.opacity})`;
+		const addX = 30, addY = 45;
+
 		this.circle.draw(gc, {x, y, r: 75, color: backgroundColor, border: true, borderWidth: 5, borderColor: lineColor});
 		gc.lineWidth = 12;
 		gc.strokeStyle = lineColor;
 		gc.beginPath();
+
 		if (dir === "left") {
-			gc.moveTo(x + 30, y - 45);
-			gc.lineTo(x - 30, y);
-			gc.lineTo(x + 30, y + 45);
+			gc.moveTo(x + addX, y - addY);
+			gc.lineTo(x - addX, y);
+			gc.lineTo(x + addX, y + addY);
 		} else {
-			gc.moveTo(x - 30, y - 45);
-			gc.lineTo(x + 30, y);
-			gc.lineTo(x - 30, y + 45);
+			gc.moveTo(x - addX, y - addY);
+			gc.lineTo(x + addX, y);
+			gc.lineTo(x - addX, y + addY);
 		}
+
 		gc.stroke();
 	}
 }

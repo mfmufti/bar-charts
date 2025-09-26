@@ -15,18 +15,18 @@ import { eventHandler } from "./eventhandler";
 import { animator } from "./animator";
 import { flickEventTranslator } from "./flickeventtranslator";
 
-let index = 0;
+let curIndex = 0;
 let setIndex = (i: number) => {
-	if (i >= 0 && i < 10 && i !== index) {
-		index = i;
+	if (i >= 0 && i < 10 && i !== curIndex) {
+		curIndex = i;
 		chart.setDataset(datasets[i]);
 		bottomBar.changeIndex(i);
 	}
 };
 let background = new Rect();
 let bottomBar = new BottomBar(setIndex);
-let chart = new Chart(() => setIndex(index - 1), () => setIndex(index + 1));
-chart.setDataset(datasets[index], false);
+let chart = new Chart(() => setIndex(curIndex - 1), () => setIndex(curIndex + 1));
+chart.setDataset(datasets[curIndex], false);
 
 addSKEventTranslator(flickEventTranslator);
 
@@ -61,15 +61,16 @@ setSKEventListener((event: SKEvent) => {
 });
 
 setSKDrawCallback((gc) => {
-	let w = gc.canvas.width, h = gc.canvas.height;
+	const w = gc.canvas.width, h = gc.canvas.height;
+	const barH = 50, chartPadding = 20; // 20 for 10 on both sides
 
 	background.draw(gc, {x: 0, y: 0, w: w, h: h, color: "gray"});
-	bottomBar.draw(gc, {x: 0, y: h - 50, w: w, h: 50});
+	bottomBar.draw(gc, {x: 0, y: h - barH, w: w, h: barH});
 	
-	let chartWidth = w - 20, chartHeight = h - 20 - 50;
+	let chartWidth = w - chartPadding, chartHeight = h - chartPadding - barH;
 	chartWidth = Math.min(chartWidth, chartHeight / 3 * 4);
 	chartHeight = Math.min(chartHeight, chartWidth / 4 * 3);
-	chart.draw(gc, {x: (w - chartWidth) / 2, y: (h - 50 - chartHeight) / 2, w: chartWidth, h: chartHeight});
+	chart.draw(gc, {x: (w - chartWidth) / 2, y: (h - barH - chartHeight) / 2, w: chartWidth, h: chartHeight});
 });
 
 setSKAnimationCallback((time) => {

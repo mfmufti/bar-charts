@@ -16,17 +16,21 @@ class Animator {
 
 	animate(time: number): void {
 		let hasBadTime = false;
+
 		this.jobs = this.jobs.filter((job) => {
 			let {start, duration, callback, easingFunction} = job;
+
 			if (Number.isNaN(start)) {
 				start = time;
 				hasBadTime = true;
 			}
+
 			let elapsed = time - start;
 			let done = elapsed >= duration;
 			callback(done ? 1 : easingFunction(elapsed / duration));
 			return !done;
 		});
+
 		if (hasBadTime) {
 			this.jobs = this.jobs.map(({start, duration, callback, easingFunction}) => {
 				return {start: Number.isNaN(start) ? time : start, duration, callback, easingFunction}

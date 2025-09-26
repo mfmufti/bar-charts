@@ -1,7 +1,11 @@
 import { Drawable } from "./drawable";
 
-export type RectOptions = {x: number, y: number, w: number, h: number, color: string, border?: boolean};
-export type LineOptions = {x1: number, y1: number, x2: number, y2: number};
+export type RectOptions = {
+	x: number, y: number, w: number, h: number, color: string, border?: boolean
+};
+export type LineOptions = {
+	x1: number, y1: number, x2: number, y2: number
+};
 export type CircleOptions = {
 	x: number, y: number, r: number, color?: string, border?: boolean,
 	fill?: boolean, borderWidth?: number, borderColor?: string
@@ -15,6 +19,7 @@ export class Rect extends Drawable {
 	draw(gc: CanvasRenderingContext2D, {x, y, w, h, color, border = false}: RectOptions) {
 		gc.fillStyle = color;
 		gc.fillRect(x, y, w, h);
+
 		if (border) {
 			gc.strokeStyle = "black";
 			gc.strokeRect(x, y, w, h);
@@ -38,10 +43,12 @@ export class Circle extends Drawable {
 		gc.beginPath();
 		gc.arc(x, y, r, 0, Math.PI * 2);
 		gc.closePath();
+
 		if (fill) {
 			gc.fillStyle = color;
 			gc.fill();
 		}
+		
 		if (border) {
 			gc.strokeStyle = borderColor;
 			gc.lineWidth = borderWidth;
