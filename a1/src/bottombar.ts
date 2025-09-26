@@ -36,7 +36,7 @@ export class BottomBar extends Drawable {
 		for (let i = 0; i < 10; i++) {
 			let curX = buttonStart + (10 + 15 * 2) * i + 15;
 			let curY = y + 15 + (50 - 30) / 2;
-			this.buttons[i].draw(gc, {x: curX, y: curY, r: 15});
+			this.buttons[i].draw(gc, {x: curX, y: curY, r: 15}, i == 0);
 		}
 	}
 
@@ -50,16 +50,16 @@ export class BottomBar extends Drawable {
 }
 
 class Button extends EventDrawable {
-	circle = new Circle();
-	labelText = new Text();
-	label: string;
-	hovered = false;
-	animationProgress = 1;
-	x?: number;
-	y?: number;
-	r?: number;
-	active = false;
-	action: () => void;
+	private circle = new Circle();
+	private labelText = new Text();
+	private label: string;
+	private hovered = false;
+	private animationProgress = 1;
+	private x?: number;
+	private y?: number;
+	private r?: number;
+	private active = false;
+	private action: () => void;
 
 	constructor(label: string, action: () => void) {
 		super();
@@ -69,7 +69,8 @@ class Button extends EventDrawable {
 		eventHandler.addClickEvent(this);
 	}
 
-	draw(gc: CanvasRenderingContext2D, {x, y, r}: ButtonOptions): void {
+	draw(gc: CanvasRenderingContext2D, {x, y, r}: ButtonOptions, special = false): void {
+		if (special) console.log("animationProgress", this.animationProgress, "active", this.active);
 		let animated = this.active && this.animationProgress === 1;
 		let animating = this.active && this.animationProgress < 1;
 		let circleColor = animated ? "dodgerblue" : "whitesmoke";
@@ -90,7 +91,7 @@ class Button extends EventDrawable {
 		if (!this.x || !this.y || !this.r) {
 			return false;
 		} else {
-			return Math.sqrt((x - this.x) ** 2 + (y - this.y) ** 2) <= this.r;
+			return Math.sqrt((x - this.x) ** 2 + (y - this.y) ** 2) <= this.r + 1;
 		}
 	}
 
@@ -106,8 +107,11 @@ class Button extends EventDrawable {
 		this.action();
 	}
 
-	setActive = () => {this.active = true;};
-	setInactive = () => {
+	setActive(): void {
+		this.active = true;
+	}
+	
+	setInactive(): void {
 		this.active = false;
 		this.animationProgress = 1;
 	};

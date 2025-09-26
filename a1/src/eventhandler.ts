@@ -19,9 +19,6 @@ class EventHandler {
 		}
 	}
 
-	addEvent(d: EventDrawable, type: EventType) {
-
-	}
 	addClickEvent = (d: EventDrawable) => {this.clickObjs.push(d);};
 	addMouseMoveEvent = (d: EventDrawable) => {this.mouseMoveObjs.push(d);};
 	addFocusEvent = (d: EventDrawable) => {this.focusObjs.push(d);};

@@ -1,4 +1,4 @@
-import { animator } from "./animator";
+import { animator, easeIn, easeOut } from "./animator";
 import { Circle, Line, Rect, Text } from "./basicshapes";
 import { type Dataset } from "./datasets";
 import { Drawable, EventDrawable } from "./drawable";
@@ -9,19 +9,19 @@ type ChartBarOptions = {x: number, y1: number, y2: number, w: number, value: num
 type OutlinedChevronOptions = {x: number, y: number, dir: string};
 
 export class Chart extends EventDrawable {
-	background = new Rect();
-	titleText = new Text();
-	xAxis = new Line();
-	yAxis = new Line();
-	outlinedChevron = new OutlinedChevron();
-	ticks: Line[] = [];
-	yLabels: Text[] = [];
-	xLabels: Text[] = [];
-	bars: ChartBar[] = [];
-	dataset?: Dataset;
-	flickDir = "left";
-	changeNext: () => void;
-	changePrev: () => void
+	private background = new Rect();
+	private titleText = new Text();
+	private xAxis = new Line();
+	private yAxis = new Line();
+	private outlinedChevron = new OutlinedChevron();
+	private ticks: Line[] = [];
+	private yLabels: Text[] = [];
+	private xLabels: Text[] = [];
+	private bars: ChartBar[] = [];
+	private dataset?: Dataset;
+	private flickDir = "left";
+	private changeNext: () => void;
+	private changePrev: () => void
 
 	constructor(changePrev: () => void, changeNext: () => void) {
 		super();
@@ -99,17 +99,17 @@ export class Chart extends EventDrawable {
 }
 
 class ChartBar extends EventDrawable {
-	rect = new Rect();
-	label = new Text();
-	hovered = false;
-	focused = false;
-	animationProgress = 1;
-	value?: number;
-	changeValue: (value: number) => void;
-	x1?: number;
-	x2?: number;
-	y1?: number;
-	y2?: number;
+	private rect = new Rect();
+	private label = new Text();
+	private hovered = false;
+	private focused = false;
+	private animationProgress = 1;
+	private value?: number;
+	private changeValue: (value: number) => void;
+	private x1?: number;
+	private x2?: number;
+	private y1?: number;
+	private y2?: number;
 
 	constructor(changeValue: (value: number) => void, animate = true) {
 		super();
@@ -117,7 +117,7 @@ class ChartBar extends EventDrawable {
 		eventHandler.addMouseMoveEvent(this);
 		eventHandler.addFocusEvent(this);
 		if (animate) {
-			animator.addJob(1000, (progress: number) => {this.animationProgress = progress});
+			animator.addJob(1000, (progress: number) => {this.animationProgress = progress}, easeIn);
 		}
 	}
 
@@ -127,7 +127,7 @@ class ChartBar extends EventDrawable {
 		if (this.focused) {
 			this.rect.draw(gc, {x: x - 5, y: y2 - h - 5, w: w + 5 * 2, h: h + 5 * 2, color: "dodgerblue"});
 		}
-		this.x1 = x, this.x2 = x + w, this.y1 = y2 - h, this.y2 = y2, this.value = value;
+		this.x1 = x - 1, this.x2 = x + w + 1, this.y1 = y2 - h - 1, this.y2 = y2 + 1, this.value = value;
 		this.rect.draw(gc, {x, y: y2 - h, w, h, color, border: true});
 		if (this.hovered) {
 			if (w > 20 && h > 20) {
@@ -178,17 +178,16 @@ class ChartBar extends EventDrawable {
 }
 
 class OutlinedChevron extends Drawable {
-	circle = new Circle();
-	opacity = 0;
+	private circle = new Circle();
+	private opacity = 0;
 
 	startAnimate() {
 		this.opacity = 0.8;
-		animator.addJob(1000, progress => this.opacity = (1 - progress) * 0.8);
-		console.log("start animate?");
+		animator.addJob(1000, progress => this.opacity = (1 - progress) * 0.8, easeOut);
 	}
 
 	draw(gc: CanvasRenderingContext2D, {x, y, dir}: OutlinedChevronOptions) {
-		if (this.opacity == 0) {
+		if (this.opacity === 0) {
 			return;
 		}
 		let lineColor = `rgba(0,0,0,${this.opacity})`;
