@@ -1,28 +1,39 @@
-import { SKContainer, SKLabel } from "simplekit/imperative-mode";
+import { Layout, SKContainer, SKLabel } from "simplekit/imperative-mode";
 import type { Model } from "../model";
 import type { Observer } from "../observer";
 
 export class StatusBar extends SKContainer implements Observer {
-	text: SKLabel;
+	leftText: SKLabel;
+	rightText: SKLabel;
+
+	constructor(model: Model) {
+		super();
+		this.leftText = new SKLabel();
+		this.rightText = new SKLabel();
+
+		const filler = new SKContainer();
+		filler.fillWidth = 1;
+		filler.fillHeight = 1;
+
+		this.padding = 10;
+		this.fill = "lightgrey";
+		this.layoutMethod = new Layout.FillRowLayout();
+
+		this.addChild(this.leftText);
+		this.addChild(filler);
+		this.addChild(this.rightText);
+		this.update(model);
+		model.addObserver(this);
+	}
 
 	update(model: Model) {
-		this.text.text =
+		this.leftText.text =
 			`${model.getChartCount()} chart` +
 			(model.getChartCount() === 1 ? "" : "s") +
 			(model.getSelectCount() === 0
 				? ""
 				: ` (${model.getSelectCount()} selected)`);
-	}
 
-	constructor(model: Model) {
-		super();
-		this.text = new SKLabel({ fill: "green" });
-
-		this.addChild(this.text);
-		this.padding = 10;
-		this.fill = "lightgrey";
-
-		model.addObserver(this);
-		this.update(model);
+		this.rightText.text = model.isShiftDown() ? "SHIFT" : "";
 	}
 }

@@ -4,14 +4,17 @@ export function drawRect(
 	y: number,
 	w: number,
 	h: number,
-	color: string
+	color: string,
+	border: boolean
 ) {
 	gc.fillStyle = color;
 	gc.fillRect(x, y, w, h);
 
-	gc.strokeStyle = "black";
-	gc.lineWidth = 1;
-	gc.strokeRect(x, y, w, h);
+	if (border) {
+		gc.strokeStyle = "black";
+		gc.lineWidth = 1;
+		gc.strokeRect(x, y, w, h);
+	}
 }
 
 export function drawText(
@@ -43,4 +46,25 @@ export function drawLine(
 	gc.moveTo(x1, y1);
 	gc.lineTo(x2, y2);
 	gc.stroke();
+}
+
+export function drawCircle(
+	gc: CanvasRenderingContext2D,
+	x: number,
+	y: number,
+	r: number,
+	color: string,
+	border: boolean
+) {
+	gc.beginPath();
+	gc.fillStyle = color;
+	gc.arc(x, y, r, 0, Math.PI * 2);
+	gc.closePath();
+	gc.fill();
+
+	if (border) {
+		gc.strokeStyle = "black";
+		gc.lineWidth = 1;
+		gc.stroke();
+	}
 }

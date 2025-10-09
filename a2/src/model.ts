@@ -1,8 +1,6 @@
+import { colorSchemes, type ColorScheme } from "./colorscheme";
 import { getDataset } from "./datasets";
 import { Subject } from "./observer";
-
-export const colorSchemes = ["rainbow", "hot", "cool", "earthy"];
-export type ColorScheme = "rainbow" | "hot" | "cool" | "earthy";
 
 export type ChartData = {
 	title: string;
@@ -14,23 +12,10 @@ export type ChartData = {
 
 export class Model extends Subject {
 	private charts: ChartData[] = [];
+	private shift = false;
 
-	constructor() {
-		super();
-		[...Array(8).keys()].forEach((i) => this.addChart(i));
-	}
-
-	getSelectCount() {
-		return this.charts.filter((chartData) => chartData.selected).length;
-	}
-
-	getChartCount() {
-		return this.charts.length;
-	}
-
-	getChartData(index: number) {
-		const { title, labels, values, colorScheme, selected } =
-			this.charts[index];
+	private cloneChart(chartData: ChartData): ChartData {
+		const { title, labels, values, colorScheme, selected } = chartData;
 		return {
 			title,
 			labels: [...labels],
@@ -40,53 +25,98 @@ export class Model extends Subject {
 		};
 	}
 
-	addChart(index?: number) {
+	constructor() {
+		super();
+		[...Array(8).keys()].forEach((i) => this.addChart(i));
+	}
+
+	shiftDown() {
+		this.shift = true;
+		this.updateObservers();
+	}
+
+	shiftUp() {
+		this.shift = false;
+		this.updateObservers();
+	}
+
+	isShiftDown() {
+		return this.shift;
+	}
+
+	getSelectCount(): number {
+		return this.charts.filter((chartData) => chartData.selected).length;
+	}
+
+	getChartCount(): number {
+		return this.charts.length;
+	}
+
+	getChartData(index: number): ChartData {
+		return this.cloneChart(this.charts[index]);
+	}
+
+	addChart(index?: number): void {
+		if (this.charts.length === 20) {
+			return;
+		}
 		const dataset = index === undefined ? getDataset() : getDataset(index);
 		this.charts.push({
 			...dataset,
-			colorScheme: "rainbow",
-			selected: true,
+			colorScheme: colorSchemes[0],
+			selected: false,
 		});
 		this.updateObservers();
 	}
 
-	removeSelectedCharts() {
+	removeSelectedCharts(): void {
 		this.charts = this.charts.filter((chartData) => !chartData.selected);
 		this.updateObservers();
 	}
 
-	toggleSelectChart(index: number) {
-		this.charts[index].selected = !this.charts[index].selected;
+	toggleSelectChart(index: number): void {
+		if (this.shift) {
+			this.charts[index].selected = !this.charts[index].selected;
+		} else {
+			const selected = this.charts[index].selected;
+			this.deselectAllCharts();
+			this.charts[index].selected = !selected;
+		}
 		this.updateObservers();
 	}
 
-	selectAllCharts() {
+	selectAllCharts(): void {
 		this.charts.forEach((chartData) => (chartData.selected = true));
 		this.updateObservers();
 	}
 
-	deselectAllChart() {
+	deselectAllCharts(): void {
 		this.charts.forEach((chartData) => (chartData.selected = false));
 		this.updateObservers();
 	}
 
-	updateChartTitle(title: string) {
-		const chart = this.getFirstSelected();
-		if (chart) {
-			chart.title = title;
-		}
+	updateChartTitle(title: string): void {
+		this.charts.some((chartData) => {
+			if (chartData.selected) {
+				chartData.title = title;
+				return true;
+			}
+		});
 		this.updateObservers();
 	}
 
-	updateChartColorScheme(colorScheme: ColorScheme) {
-		const chart = this.getFirstSelected();
-		if (chart) {
-			chart.colorScheme = colorScheme;
-		}
+	updateChartColorScheme(colorScheme: ColorScheme): void {
+		this.charts.some((chartData) => {
+			if (chartData.selected) {
+				chartData.colorScheme = colorScheme;
+				return true;
+			}
+		});
 		this.updateObservers();
 	}
 
-	getFirstSelected() {
-		return this.charts.find((chartData) => chartData.selected) || null;
+	getFirstSelected(): ChartData | null {
+		const chart = this.charts.find((chartData) => chartData.selected);
+		return chart ? this.cloneChart(chart) : null;
 	}
 }

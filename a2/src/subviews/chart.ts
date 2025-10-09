@@ -1,39 +1,51 @@
-import { SKContainer } from "simplekit/imperative-mode";
+import { Layout, SKContainer, SKLabel } from "simplekit/imperative-mode";
 import { ChartLayout } from "../layouts/chartlayout";
 import type { ChartData, Model } from "../model";
 import { drawRect, drawLine, drawText } from "../draw";
 import type { Observer } from "../observer";
+import { getColor } from "../colorscheme";
 
 export class ChartArea extends SKContainer implements Observer {
-	private chart: Chart;
+	private chart: Chart = new Chart();
+	private text: SKLabel = new SKLabel();
 
 	constructor(model: Model) {
 		super();
-		this.layoutMethod = new ChartLayout();
-		this.chart = new Chart();
-		this.addChild(this.chart);
+		this.fill = "grey";
 		this.update(model);
+		model.addObserver(this);
 	}
 
 	update(model: Model) {
 		const chartData = model.getFirstSelected();
-		console.log("received update");
-		if (chartData) {
+		const selectCount = model.getSelectCount();
+		if (selectCount === 1 && chartData) {
+			this.clearChildren();
+			this.text.text = "";
+			this.layoutMethod = new ChartLayout();
 			this.chart.setChartData(chartData);
+			this.addChild(this.chart);
 		} else {
-			// ...
+			this.clearChildren();
+			this.chart.setChartData(null);
+			this.layoutMethod = new Layout.CentredLayout();
+			this.text.text =
+				selectCount === 0
+					? "no chart selected"
+					: "more than 1 chart selected";
+			this.addChild(this.text);
 		}
 	}
 }
 
 export class Chart extends SKContainer {
-	chartData?: ChartData;
+	chartData: ChartData | null = null;
 
 	constructor() {
 		super();
 	}
 
-	setChartData(chartData: ChartData) {
+	setChartData(chartData: ChartData | null) {
 		this.chartData = chartData;
 	}
 
@@ -52,13 +64,14 @@ export class Chart extends SKContainer {
 			marginRight = 30,
 			tickSize = 5,
 			barSpace = 20,
-			tickCnt = 11;
+			tickCnt = 11,
+			leftLabelCnt = 6;
 
-		const { title, labels, values } = this.chartData,
-			labelCnt = labels.length,
+		const { title, labels, values, colorScheme } = this.chartData,
+			valueCnt = labels.length,
 			barW =
-				(w - marginRight - margin - barSpace * (labelCnt + 1)) /
-				labelCnt;
+				(w - marginRight - margin - barSpace * (valueCnt + 1)) /
+				valueCnt;
 
 		drawLine(gc, margin, w - marginRight, h - margin, h - margin);
 		drawLine(gc, margin, margin, margin, h - margin);
@@ -68,8 +81,8 @@ export class Chart extends SKContainer {
 			drawLine(gc, margin - tickSize, margin, tickY, tickY);
 		}
 
-		for (let i = 0; i < labelCnt; i++) {
-			let labelY = ((h - margin * 2) / (labelCnt - 1)) * i + margin;
+		for (let i = 0; i < leftLabelCnt; i++) {
+			let labelY = ((h - margin * 2) / (leftLabelCnt - 1)) * i + margin;
 			drawText(
 				gc,
 				margin - tickSize * 2,
@@ -84,14 +97,15 @@ export class Chart extends SKContainer {
 		drawText(gc, w / 2, margin / 2, title, 18, "center", "middle");
 
 		labels.forEach((label, i) => {
-			let labelX = margin + (barW + barSpace) * i + barSpace + barW / 2;
+			const labelX = margin + (barW + barSpace) * i + barSpace + barW / 2;
 			drawText(gc, labelX, h - margin + 10, label, 14, "center", "top");
 		});
 
 		values.forEach((value, i) => {
-			let barX = margin + (barW + barSpace) * i + barSpace;
-			let barH = ((h - margin * 2) / 100) * value;
-			drawRect(gc, barX, h - margin, barW, -barH, "red");
+			const barX = margin + (barW + barSpace) * i + barSpace;
+			const barH = ((h - margin * 2) / 100) * value;
+			const color = getColor(colorScheme, valueCnt, i);
+			drawRect(gc, barX, h - margin, barW, -barH, color, true);
 		});
 
 		gc.translate(-this.x, -this.y);

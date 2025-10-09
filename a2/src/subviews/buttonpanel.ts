@@ -1,7 +1,8 @@
 import { SKContainer, Layout, SKButton } from "simplekit/imperative-mode";
+import type { Model } from "../model";
 
 export class ButtonPanel extends SKContainer {
-	constructor() {
+	constructor(model: Model) {
 		super();
 		const width = 80,
 			height = 28;
@@ -17,8 +18,11 @@ export class ButtonPanel extends SKContainer {
 		this.padding = 10;
 		this.fill = "lightgrey";
 
-		addButton.addEventListener("click", () => {
-			console.log("your mom");
-		});
+		addButton.addEventListener("click", () => model.addChart());
+		deleteButton.addEventListener("click", () =>
+			model.removeSelectedCharts()
+		);
+		noneButton.addEventListener("click", () => model.deselectAllCharts());
+		allButton.addEventListener("click", () => model.selectAllCharts());
 	}
 }
