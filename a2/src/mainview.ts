@@ -1,9 +1,4 @@
-import {
-	SKContainer,
-	Layout,
-	requestKeyboardFocus,
-	SKMouseEvent,
-} from "simplekit/imperative-mode";
+import { SKContainer, Layout } from "simplekit/imperative-mode";
 import { ButtonPanel } from "./subviews/buttonpanel";
 import type { Model } from "./model";
 import { StatusBar } from "./subviews/statusbar";
@@ -33,24 +28,5 @@ export class MainView extends SKContainer {
 		this.addChild(buttonPanel);
 		this.addChild(chartList);
 		this.addChild(statusBar);
-
-		this.addEventListener("keydown", (ev) => {
-			if ((ev as KeyboardEvent).key === "Shift") {
-				model.shiftDown();
-			}
-		});
-
-		this.addEventListener("keyup", (ev) => {
-			if ((ev as KeyboardEvent).key === "Shift") {
-				model.shiftUp();
-			}
-		});
-	}
-
-	handleMouseEvent(me: SKMouseEvent): boolean {
-		if (me.type === "mousedown") {
-			requestKeyboardFocus(this);
-		}
-		return false;
 	}
 }

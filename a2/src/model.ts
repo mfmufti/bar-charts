@@ -1,3 +1,4 @@
+import { randomInt } from "simplekit/utility";
 import { colorSchemes, type ColorScheme } from "./colorscheme";
 import { getDataset } from "./datasets";
 import { Subject } from "./observer";
@@ -61,9 +62,13 @@ export class Model extends Subject {
 			return;
 		}
 		const dataset = index === undefined ? getDataset() : getDataset(index);
+		const colorScheme =
+			colorSchemes[
+				index === undefined ? randomInt(0, colorSchemes.length) : 0
+			];
 		this.charts.push({
 			...dataset,
-			colorScheme: colorSchemes[0],
+			colorScheme,
 			selected: false,
 		});
 		this.updateObservers();
@@ -75,12 +80,17 @@ export class Model extends Subject {
 	}
 
 	toggleSelectChart(index: number): void {
+		const selected = this.charts[index].selected;
 		if (this.shift) {
-			this.charts[index].selected = !this.charts[index].selected;
-		} else {
-			const selected = this.charts[index].selected;
-			this.deselectAllCharts();
 			this.charts[index].selected = !selected;
+		} else {
+			const selectCount = this.getSelectCount();
+			this.deselectAllCharts();
+			if (selectCount !== 1 && selected) {
+				this.charts[index].selected = true;
+			} else {
+				this.charts[index].selected = !selected;
+			}
 		}
 		this.updateObservers();
 	}

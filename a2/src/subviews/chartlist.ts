@@ -12,6 +12,8 @@ export class ChartList extends SKContainer implements Observer {
 		this.layoutMethod = new Layout.WrapRowLayout({ gap: 10 });
 		this.padding = 10;
 		this.fill = "white";
+
+		this.addEventListener("click", () => model.deselectAllCharts());
 	}
 
 	update(model: Model) {
@@ -42,7 +44,10 @@ export class ChartIcon extends SKContainer {
 
 		this.addEventListener("mouseenter", () => (this.hovered = true));
 		this.addEventListener("mouseexit", () => (this.hovered = false));
-		this.addEventListener("click", onClick);
+		this.addEventListener("click", () => {
+			onClick();
+			return true;
+		});
 	}
 
 	draw(gc: CanvasRenderingContext2D) {

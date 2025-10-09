@@ -27,12 +27,12 @@ export class StatusBar extends SKContainer implements Observer {
 	}
 
 	update(model: Model) {
+		const chartCount = model.getChartCount();
+		const selectCount = model.getSelectCount();
 		this.leftText.text =
-			`${model.getChartCount()} chart` +
-			(model.getChartCount() === 1 ? "" : "s") +
-			(model.getSelectCount() === 0
-				? ""
-				: ` (${model.getSelectCount()} selected)`);
+			`${chartCount || "no"} chart` +
+			(chartCount === 1 ? "" : "s") +
+			(selectCount === 0 ? "" : ` (${selectCount} selected)`);
 
 		this.rightText.text = model.isShiftDown() ? "SHIFT" : "";
 	}
