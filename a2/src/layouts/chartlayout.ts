@@ -4,8 +4,6 @@ const minPadding = 10;
 const ratio = 4 / 3;
 
 export class ChartLayout implements LayoutMethod {
-	constructor() {}
-
 	measure(elements: SKElement[]) {
 		elements.forEach((el) => el.measure());
 		return {

@@ -16,7 +16,7 @@ export class ChartArea extends SKContainer implements Observer {
 		model.addObserver(this);
 	}
 
-	update(model: Model) {
+	update(model: Model): void {
 		const chartData = model.getFirstSelected();
 		const selectCount = model.getSelectCount();
 		if (selectCount === 1 && chartData) {
@@ -39,17 +39,17 @@ export class ChartArea extends SKContainer implements Observer {
 }
 
 export class Chart extends SKContainer {
-	chartData: ChartData | null = null;
+	private chartData: ChartData | null = null;
 
 	constructor() {
 		super();
 	}
 
-	setChartData(chartData: ChartData | null) {
+	setChartData(chartData: ChartData | null): void {
 		this.chartData = chartData;
 	}
 
-	draw(gc: CanvasRenderingContext2D) {
+	draw(gc: CanvasRenderingContext2D): void {
 		if (!this.chartData) {
 			return;
 		}

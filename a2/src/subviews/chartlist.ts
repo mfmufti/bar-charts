@@ -7,16 +7,16 @@ import { getColor } from "../colorscheme";
 export class ChartList extends SKContainer implements Observer {
 	constructor(model: Model) {
 		super();
-		model.addObserver(this);
-		this.update(model);
 		this.layoutMethod = new Layout.WrapRowLayout({ gap: 10 });
 		this.padding = 10;
 		this.fill = "white";
 
 		this.addEventListener("click", () => model.deselectAllCharts());
+		model.addObserver(this);
+		this.update(model);
 	}
 
-	update(model: Model) {
+	update(model: Model): void {
 		this.clearChildren();
 		[...Array(model.getChartCount()).keys()].forEach((i) =>
 			this.addChild(
@@ -29,8 +29,8 @@ export class ChartList extends SKContainer implements Observer {
 }
 
 export class ChartIcon extends SKContainer {
-	chartData: ChartData;
-	hovered: boolean = false;
+	private chartData: ChartData;
+	private hovered: boolean = false;
 
 	constructor(chartData: ChartData, onClick: () => void) {
 		super();
@@ -50,7 +50,7 @@ export class ChartIcon extends SKContainer {
 		});
 	}
 
-	draw(gc: CanvasRenderingContext2D) {
+	draw(gc: CanvasRenderingContext2D): void {
 		const w = this.width || 0,
 			h = this.height || 0,
 			spacing = 2,

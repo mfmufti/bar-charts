@@ -11,11 +11,11 @@ export class Subject {
 		}
 	}
 
-	removeObserver(observer: Observer) {
+	removeObserver(observer: Observer): void {
 		this.observers = this.observers.filter((ob) => ob !== observer);
 	}
 
-	updateObservers() {
+	updateObservers(): void {
 		this.observers.forEach((ob) => ob.update(this));
 	}
 }

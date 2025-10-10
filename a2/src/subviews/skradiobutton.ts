@@ -2,8 +2,8 @@ import { Layout, SKContainer, Style } from "simplekit/imperative-mode";
 import { drawCircle, drawText } from "../draw";
 
 export class SKRadioButtonGroup extends SKContainer {
-	radioButtons: SKRadioButton[];
-	curIndex: number | null = null;
+	private radioButtons: SKRadioButton[];
+	private curIndex: number | null = null;
 
 	constructor(labels: string[], onSelect: (index: number) => void) {
 		super();
@@ -18,7 +18,7 @@ export class SKRadioButtonGroup extends SKContainer {
 		this.layoutMethod = new Layout.WrapRowLayout({ gap: 15 });
 	}
 
-	select(index: number) {
+	select(index: number): void {
 		if (this.curIndex === index) {
 			return;
 		}
@@ -29,18 +29,18 @@ export class SKRadioButtonGroup extends SKContainer {
 		this.curIndex = index;
 	}
 
-	deselect() {
+	deselect(): void {
 		if (this.curIndex !== null) {
 			this.radioButtons[this.curIndex].deselect();
 		}
 		this.curIndex = null;
 	}
 
-	enable() {
+	enable(): void {
 		this.radioButtons.forEach((el) => el.enable());
 	}
 
-	disable() {
+	disable(): void {
 		this.deselect();
 		this.radioButtons.forEach((el) => el.disable());
 	}
@@ -78,23 +78,23 @@ export class SKRadioButton extends SKContainer {
 		return (mx - cx) ** 2 + (my - cy) ** 2 <= r ** 2;
 	}
 
-	select() {
+	select(): void {
 		this.selected = true;
 	}
 
-	deselect() {
+	deselect(): void {
 		this.selected = false;
 	}
 
-	enable() {
+	enable(): void {
 		this.enabled = true;
 	}
 
-	disable() {
+	disable(): void {
 		this.enabled = false;
 	}
 
-	draw(gc: CanvasRenderingContext2D) {
+	draw(gc: CanvasRenderingContext2D): void {
 		const r = (this.height || 0) / 2;
 		gc.translate(this.x, this.y);
 
@@ -108,7 +108,7 @@ export class SKRadioButton extends SKContainer {
 			drawCircle(gc, r, r, r - 4, "black", false);
 		}
 
-		drawText(gc, 30, r, this.label, 14, "left", "middle");
+		drawText(gc, 30, r, this.label, 15, "left", "middle");
 
 		gc.translate(-this.x, -this.y);
 	}

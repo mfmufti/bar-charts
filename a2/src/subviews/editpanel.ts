@@ -30,6 +30,7 @@ export class EditPanel extends SKContainer implements Observer {
 			colorSchemes.map((cs) => cs.name),
 			(index) => model.updateChartColorScheme(colorSchemes[index])
 		);
+		this.buttonGroup.height = 135;
 
 		this.textField = new Textfield();
 		this.textField.fillWidth = 1;
@@ -49,7 +50,7 @@ export class EditPanel extends SKContainer implements Observer {
 		model.addObserver(this);
 	}
 
-	draw(gc: CanvasRenderingContext2D) {
+	draw(gc: CanvasRenderingContext2D): void {
 		super.draw(gc);
 		if (this.disabled) {
 			drawRect(
@@ -64,7 +65,7 @@ export class EditPanel extends SKContainer implements Observer {
 		}
 	}
 
-	update(model: Model) {
+	update(model: Model): void {
 		const selectedChart = model.getFirstSelected();
 		if (!selectedChart || model.getSelectCount() !== 1) {
 			this.buttonGroup.disable();
@@ -84,13 +85,13 @@ export class EditPanel extends SKContainer implements Observer {
 }
 
 class Textfield extends SKTextfield {
-	enabled = true;
+	private enabled = true;
 
-	disable() {
+	disable(): void {
 		this.enabled = false;
 	}
 
-	enable() {
+	enable(): void {
 		this.enabled = true;
 	}
 

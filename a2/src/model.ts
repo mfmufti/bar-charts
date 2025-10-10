@@ -31,17 +31,17 @@ export class Model extends Subject {
 		[...Array(8).keys()].forEach((i) => this.addChart(i));
 	}
 
-	shiftDown() {
+	shiftDown(): void {
 		this.shift = true;
 		this.updateObservers();
 	}
 
-	shiftUp() {
+	shiftUp(): void {
 		this.shift = false;
 		this.updateObservers();
 	}
 
-	isShiftDown() {
+	isShiftDown(): boolean {
 		return this.shift;
 	}
 

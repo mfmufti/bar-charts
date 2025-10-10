@@ -24,4 +24,5 @@ setSKEventListener((ev) => {
 });
 
 setSKRoot(mainView);
+
 startSimpleKit();

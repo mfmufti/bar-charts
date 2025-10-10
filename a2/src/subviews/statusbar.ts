@@ -3,8 +3,8 @@ import type { Model } from "../model";
 import type { Observer } from "../observer";
 
 export class StatusBar extends SKContainer implements Observer {
-	leftText: SKLabel;
-	rightText: SKLabel;
+	private leftText: SKLabel;
+	private rightText: SKLabel;
 
 	constructor(model: Model) {
 		super();
@@ -26,7 +26,7 @@ export class StatusBar extends SKContainer implements Observer {
 		model.addObserver(this);
 	}
 
-	update(model: Model) {
+	update(model: Model): void {
 		const chartCount = model.getChartCount();
 		const selectCount = model.getSelectCount();
 		this.leftText.text =

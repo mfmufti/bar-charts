@@ -6,7 +6,7 @@ export function drawRect(
 	h: number,
 	color: string,
 	border: boolean
-) {
+): void {
 	gc.fillStyle = color;
 	gc.fillRect(x, y, w, h);
 
@@ -25,7 +25,7 @@ export function drawText(
 	size: number,
 	alignX: "center" | "left" | "right",
 	alignY: "middle" | "top" | "bottom"
-) {
+): void {
 	gc.font = size + "px sans-serif";
 	gc.textAlign = alignX;
 	gc.textBaseline = alignY;
@@ -39,7 +39,7 @@ export function drawLine(
 	x2: number,
 	y1: number,
 	y2: number
-) {
+): void {
 	gc.strokeStyle = "black";
 	gc.lineWidth = 1;
 	gc.beginPath();
@@ -55,7 +55,7 @@ export function drawCircle(
 	r: number,
 	color: string,
 	border: boolean
-) {
+): void {
 	gc.beginPath();
 	gc.fillStyle = color;
 	gc.arc(x, y, r, 0, Math.PI * 2);

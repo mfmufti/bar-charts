@@ -1,8 +1,6 @@
 import { type LayoutMethod, SKElement } from "simplekit/imperative-mode";
 
 export class MainLayout implements LayoutMethod {
-	constructor() {}
-
 	measure(elements: SKElement[]) {
 		elements.forEach((el) => el.measure());
 		return {
@@ -34,6 +32,7 @@ export class MainLayout implements LayoutMethod {
 			y += heights[i];
 			el.layout(width, heights[i]);
 		});
+
 		return { width, height };
 	}
 }
