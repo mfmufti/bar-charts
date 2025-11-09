@@ -15,6 +15,26 @@ export class ChartArea extends View {
 		this.text = new View(html`<span id="chart-message"></span>`);
 		this.addChild(this.chart);
 		this.addChild(this.text);
+
+		const resizer = () => {
+			const canvas = this.root.firstElementChild as HTMLCanvasElement;
+			const ratio = canvas.width / canvas.height;
+			const padding = 20;
+			const availableW = this.root.clientWidth - padding;
+			const availableH = this.root.clientHeight - padding;
+			canvas.style.width = `${Math.min(
+				availableW,
+				availableH * ratio
+			)}px`;
+			canvas.style.height = `${Math.min(
+				availableH,
+				availableW / ratio
+			)}px`;
+		};
+
+		window.addEventListener("load", resizer);
+		window.addEventListener("resize", resizer);
+
 		this.update(model);
 		model.addObserver(this);
 	}

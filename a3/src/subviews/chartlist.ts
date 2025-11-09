@@ -33,8 +33,6 @@ export class ChartIcon extends View {
 		super(html`
 			<div class="chart-icon-wrapper">
 				<canvas class="chart-icon" width="60px" height="44px"></canvas>
-				<div class="chart-icon-hovered"></div>
-				<div class="chart-icon-selected"></div>
 			</div>
 		`);
 

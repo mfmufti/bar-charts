@@ -9,16 +9,22 @@ export class EditPanel extends View {
 	private titleField: TextField;
 	private valuesLabel: View;
 	private options: Options;
-	private overlay: View;
 	private valuesWrapper: View;
+	private textFields: TextField[] = [];
 	private ignoreUpdate: boolean = false;
 
 	constructor(model: Model) {
 		super(html`<div id="edit-panel"></div>`);
 
-		this.titleField = new TextField("Title:", (value) => {
-			model.updateChartTitle(value);
-		});
+		this.titleField = new TextField(
+			"Title:",
+			(value) => {
+				model.updateChartTitle(value);
+			},
+			() => this.saveState(model),
+			false,
+			0
+		);
 
 		this.valuesLabel = new View(html`
 			<div class="text-field-wrapper">
@@ -28,21 +34,24 @@ export class EditPanel extends View {
 
 		this.options = new Options(
 			colorSchemes.map((cs) => cs.name),
-			(index) => model.updateChartColorScheme(colorSchemes[index])
+			(index) => model.updateChartColorScheme(colorSchemes[index]),
+			() => this.saveState(model)
 		);
 
 		this.valuesWrapper = new View(html`<div id="values-wrapper"></div>`);
 
-		this.overlay = new View(html`<div id="edit-panel-overlay"></div>`);
-		this.overlay.root.style.display = "none";
-
 		this.addChild(this.titleField);
 		this.addChild(this.options);
 		this.addChild(this.valuesLabel);
-		this.addChild(this.overlay);
 		this.addChild(this.valuesWrapper);
 		this.update(model);
 		model.addObserver(this);
+	}
+
+	private saveState(model: Model) {
+		this.ignoreUpdate = true;
+		model.saveState();
+		this.ignoreUpdate = false;
 	}
 
 	update(model: Model): void {
@@ -54,8 +63,9 @@ export class EditPanel extends View {
 			this.options.disable();
 			this.titleField.value = "";
 			this.titleField.disable();
-			this.overlay.root.style.display = "block";
 			this.valuesLabel.root.style.display = "none";
+			this.textFields.forEach((textField) => textField.removeListeners());
+			this.textFields = [];
 			this.valuesWrapper.root.innerHTML = "";
 		} else {
 			this.options.enable();
@@ -64,8 +74,9 @@ export class EditPanel extends View {
 			);
 			this.titleField.value = selectedChart.title;
 			this.titleField.enable();
-			this.overlay.root.style.display = "none";
 			this.valuesLabel.root.style.display = "block";
+			this.textFields.forEach((textField) => textField.removeListeners());
+			this.textFields = [];
 			this.valuesWrapper.root.innerHTML = "";
 			selectedChart.labels.forEach((label, i) => {
 				const textField = new TextField(
@@ -75,10 +86,13 @@ export class EditPanel extends View {
 						model.updateChartValue(i, parseInt("0" + value));
 						this.ignoreUpdate = false;
 					},
-					true
+					() => this.saveState(model),
+					true,
+					i + 1
 				);
 				textField.value = selectedChart.values[i].toString();
 				this.valuesWrapper.addChild(textField);
+				this.textFields.push(textField);
 			});
 		}
 	}

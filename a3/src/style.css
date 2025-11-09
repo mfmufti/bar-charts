@@ -93,9 +93,23 @@ html {
 	margin-top: 10px;
 	width: 60px;
 	height: 44px;
-	border-width: 1px; /* double check this */
+	border-width: 1px;
+	border-color: black;
+	border-style: solid;
 	position: relative;
 	user-select: none;
+}
+
+.chart-icon-wrapper.selected {
+	box-shadow: 0 0 0 2px black;
+}
+
+.chart-icon-wrapper:hover {
+	box-shadow: 0 0 0 4px lightskyblue;
+}
+
+.chart-icon-wrapper.selected:hover {
+	box-shadow: 0 0 0 2px black, 0 0 0 4px lightskyblue;
 }
 
 .chart-icon {
@@ -112,38 +126,6 @@ html {
 	user-select: none;
 	left: 0px;
 	top: 0px;
-}
-
-.chart-icon-hovered {
-	display: none;
-	padding: 4px;
-	background-color: lightskyblue;
-	width: 100%;
-	height: 100%;
-	z-index: 1;
-	position: absolute;
-	left: -4px;
-	top: -4px;
-}
-
-.chart-icon-selected {
-	display: none;
-	padding: 2px;
-	background-color: black;
-	width: 100%;
-	height: 100%;
-	z-index: 2;
-	position: absolute;
-	left: -2px;
-	top: -2px;
-}
-
-.chart-icon-wrapper:hover > .chart-icon-hovered {
-	display: block;
-}
-
-.chart-icon-wrapper.selected > .chart-icon-selected {
-	display: block;
 }
 
 #edit-panel {
@@ -187,11 +169,6 @@ html {
 	float: right;
 }
 
-#edit-panel-overlay {
-	background-color: rgba(211, 211, 211, 0.7);
-	/* fill the space */
-}
-
 #status-bar {
 	padding: 10px;
 	background-color: lightgrey;
@@ -203,17 +180,3 @@ html {
 	right: 0px;
 	padding-right: 10px;
 }
-
-/* 
-Add:
-top-wrapper has spacing of 10px
-buttons have gap 10px between them
-disabled button style? (make sure button styles match for each state)
-chart has 4:3 aspect ratio, and centered
-message within chart-area (selected for instance) is centered
-chart icon bars have 10px gap
-this.buttonGroup.height = 135;
-this.textField.fillWidth = 1;
-editpanel has 10px gap?
-15px between radio buttons?
-*/

@@ -24,6 +24,7 @@ export class Model extends Subject {
 	private shift = false;
 	private undoStates: State[] = [];
 	private redoStates: State[] = [];
+	private focusedElement: HTMLElement | null = null;
 
 	private cloneChart(chartData: ChartData): ChartData {
 		const { title, labels, values, colorScheme, selected } = chartData;
@@ -45,22 +46,26 @@ export class Model extends Subject {
 		[...Array(8).keys()].forEach((i) => this.addChart(i));
 	}
 
-	private getState(): State {
+	private getState(newState: boolean): State {
 		return {
 			charts: this.cloneCharts(this.charts),
-			focusedElement: document.activeElement as HTMLElement | null,
+			focusedElement: (newState
+				? document.activeElement
+				: this.focusedElement) as HTMLElement | null,
 		};
 	}
 
 	private restoreState(state: State): void {
 		this.charts = state.charts;
+		this.focusedElement = state.focusedElement;
+		this.updateObservers();
 		if (state.focusedElement) {
 			state.focusedElement.focus();
 		}
 	}
 
 	saveState(): void {
-		this.undoStates.push(this.getState());
+		this.undoStates.push(this.getState(true));
 		this.redoStates = [];
 		this.updateObservers();
 	}
@@ -70,9 +75,8 @@ export class Model extends Subject {
 		if (!state) {
 			return;
 		}
-		this.redoStates.push(this.getState());
+		this.redoStates.push(this.getState(false));
 		this.restoreState(state);
-		this.updateObservers();
 	}
 
 	redo(): void {
@@ -80,9 +84,8 @@ export class Model extends Subject {
 		if (!state) {
 			return;
 		}
-		this.undoStates.push(this.getState());
+		this.undoStates.push(this.getState(false));
 		this.restoreState(state);
-		this.updateObservers();
 	}
 
 	hasUndo(): boolean {
