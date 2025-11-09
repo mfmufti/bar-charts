@@ -24,7 +24,7 @@ export class Model extends Subject {
 	private shift = false;
 	private undoStates: State[] = [];
 	private redoStates: State[] = [];
-	private focusedElement: HTMLElement | null = null;
+	private curState: State | null = null;
 
 	private cloneChart(chartData: ChartData): ChartData {
 		const { title, labels, values, colorScheme, selected } = chartData;
@@ -47,17 +47,18 @@ export class Model extends Subject {
 	}
 
 	private getState(newState: boolean): State {
-		return {
-			charts: this.cloneCharts(this.charts),
-			focusedElement: (newState
-				? document.activeElement
-				: this.focusedElement) as HTMLElement | null,
-		};
+		return newState || !this.curState
+			? {
+					charts: this.cloneCharts(this.charts),
+					focusedElement:
+						document.activeElement as HTMLElement | null,
+			  }
+			: this.curState;
 	}
 
 	private restoreState(state: State): void {
 		this.charts = state.charts;
-		this.focusedElement = state.focusedElement;
+		this.curState = state;
 		this.updateObservers();
 		if (state.focusedElement) {
 			state.focusedElement.focus();
