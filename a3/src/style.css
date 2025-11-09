@@ -1,0 +1,207 @@
+#app,
+#main-view,
+body,
+html {
+	height: 100%;
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
+	font-family: sans-serif;
+}
+
+#chart-area {
+	width: 100%;
+	height: 100%;
+}
+
+#top-wrapper {
+	padding: 10px;
+	flex-grow: 1;
+	display: flex;
+	height: 60%;
+	box-sizing: border-box;
+}
+
+#bottom-wrapper {
+	height: 40%;
+	display: flex;
+	flex-direction: column;
+}
+
+#button-panel {
+	padding: 10px;
+	background-color: lightgrey;
+}
+
+#button-panel > button {
+	margin-right: 10px;
+}
+
+#chart-area {
+	background-color: grey;
+	flex-grow: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 10px;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+}
+
+#chart {
+	position: relative;
+	aspect-ratio: 4 / 3;
+	border-style: solid;
+	max-width: 100%;
+	max-height: 100%;
+	border-width: 1px;
+	border-color: black;
+	display: flex;
+}
+
+#chart-message {
+	width: 100%;
+	text-align: center;
+}
+
+#chart-list {
+	background-color: white;
+	padding: 0px 10px 10px 0px;
+	overflow-y: auto;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-content: flex-start;
+}
+
+.chart-icon-wrapper {
+	margin-left: 10px;
+	margin-top: 10px;
+	width: 60px;
+	height: 44px;
+	border-width: 1px; /* double check this */
+	position: relative;
+	user-select: none;
+}
+
+.chart-icon {
+	background-color: white;
+	width: 60px;
+	height: 44px;
+	padding: 5px;
+	box-sizing: border-box;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	z-index: 3;
+	position: absolute;
+	user-select: none;
+	left: 0px;
+	top: 0px;
+}
+
+.chart-icon-hovered {
+	display: none;
+	padding: 4px;
+	background-color: lightskyblue;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	position: absolute;
+	left: -4px;
+	top: -4px;
+}
+
+.chart-icon-selected {
+	display: none;
+	padding: 2px;
+	background-color: black;
+	width: 100%;
+	height: 100%;
+	z-index: 2;
+	position: absolute;
+	left: -2px;
+	top: -2px;
+}
+
+.chart-icon-wrapper:hover > .chart-icon-hovered {
+	display: block;
+}
+
+.chart-icon-wrapper.selected > .chart-icon-selected {
+	display: block;
+}
+
+.button {
+	height: 28px;
+	width: 80px;
+}
+
+#edit-panel {
+	width: 200px;
+	background-color: whitesmoke;
+	border-color: black;
+	border-width: 1px;
+	padding: 10px;
+	box-sizing: border-box;
+	margin-left: 10px;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+
+#text-field-wrapper {
+	display: flex;
+	width: 100%;
+}
+
+#text-field-wrapper > label {
+	padding-right: 10px;
+	width: 50px;
+	text-align: right;
+	flex-shrink: 0;
+	flex-grow: 0;
+	flex-basis: 50px;
+}
+
+#text-field {
+	flex-grow: 1;
+	min-width: 0px;
+}
+
+#edit-panel-overlay {
+	background-color: rgba(211, 211, 211, 0.7);
+	/* fill the space */
+}
+
+#text-field {
+	padding-left: 10px;
+}
+
+#status-bar {
+	padding: 10px;
+	background-color: lightgrey;
+	position: relative;
+}
+
+#status-bar-right {
+	position: absolute;
+	right: 0px;
+	padding-right: 10px;
+}
+
+/* 
+Add:
+top-wrapper has spacing of 10px
+buttons have gap 10px between them
+disabled button style? (make sure button styles match for each state)
+chart has 4:3 aspect ratio, and centered
+message within chart-area (selected for instance) is centered
+chart icon bars have 10px gap
+this.buttonGroup.height = 135;
+this.textField.fillWidth = 1;
+editpanel has 10px gap?
+15px between radio buttons?
+*/
