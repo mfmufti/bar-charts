@@ -10,6 +10,11 @@ export type ChartData = {
 	selected: boolean;
 };
 
+type State = {
+	charts: ChartData[];
+	focusedElement: HTMLElement | null;
+};
+
 function randomInt(a: number, b: number): number {
 	return Math.floor(Math.random() * (b - a * 1) + a);
 }
@@ -17,6 +22,8 @@ function randomInt(a: number, b: number): number {
 export class Model extends Subject {
 	private charts: ChartData[] = [];
 	private shift = false;
+	private undoStates: State[] = [];
+	private redoStates: State[] = [];
 
 	private cloneChart(chartData: ChartData): ChartData {
 		const { title, labels, values, colorScheme, selected } = chartData;
@@ -29,9 +36,61 @@ export class Model extends Subject {
 		};
 	}
 
+	private cloneCharts(charts: ChartData[]): ChartData[] {
+		return charts.map((chartData) => this.cloneChart(chartData));
+	}
+
 	constructor() {
 		super();
 		[...Array(8).keys()].forEach((i) => this.addChart(i));
+	}
+
+	private getState(): State {
+		return {
+			charts: this.cloneCharts(this.charts),
+			focusedElement: document.activeElement as HTMLElement | null,
+		};
+	}
+
+	private restoreState(state: State): void {
+		this.charts = state.charts;
+		if (state.focusedElement) {
+			state.focusedElement.focus();
+		}
+	}
+
+	saveState(): void {
+		this.undoStates.push(this.getState());
+		this.redoStates = [];
+		this.updateObservers();
+	}
+
+	undo(): void {
+		const state = this.undoStates.pop();
+		if (!state) {
+			return;
+		}
+		this.redoStates.push(this.getState());
+		this.restoreState(state);
+		this.updateObservers();
+	}
+
+	redo(): void {
+		const state = this.redoStates.pop();
+		if (!state) {
+			return;
+		}
+		this.undoStates.push(this.getState());
+		this.restoreState(state);
+		this.updateObservers();
+	}
+
+	hasUndo(): boolean {
+		return this.undoStates.length !== 0;
+	}
+
+	hasRedo(): boolean {
+		return this.redoStates.length !== 0;
 	}
 
 	shiftDown(): void {
@@ -131,5 +190,15 @@ export class Model extends Subject {
 	getFirstSelected(): ChartData | null {
 		const chart = this.charts.find((chartData) => chartData.selected);
 		return chart ? this.cloneChart(chart) : null;
+	}
+
+	updateChartValue(index: number, value: number): void {
+		this.charts.some((chartData) => {
+			if (chartData.selected) {
+				chartData.values[index] = value;
+				return true;
+			}
+		});
+		this.updateObservers();
 	}
 }

@@ -31,10 +31,22 @@ html {
 #button-panel {
 	padding: 10px;
 	background-color: lightgrey;
+	position: relative;
 }
 
-#button-panel > button {
+#button-panel .button {
 	margin-right: 10px;
+}
+
+#button-panel > #right-buttons {
+	right: 0px;
+	position: absolute;
+	display: inline-block;
+}
+
+.button {
+	height: 28px;
+	width: 80px;
 }
 
 #chart-area {
@@ -134,11 +146,6 @@ html {
 	display: block;
 }
 
-.button {
-	height: 28px;
-	width: 80px;
-}
-
 #edit-panel {
 	width: 200px;
 	background-color: whitesmoke;
@@ -150,14 +157,18 @@ html {
 	border-style: solid;
 	border-color: black;
 	border-width: 1px;
+	position: relative;
+	overflow-y: auto;
+	flex-shrink: 0;
 }
 
-#text-field-wrapper {
+.text-field-wrapper {
 	display: flex;
 	width: 100%;
+	margin-bottom: 5px;
 }
 
-#text-field-wrapper > label {
+.text-field-wrapper > label {
 	padding-right: 10px;
 	width: 50px;
 	text-align: right;
@@ -166,18 +177,19 @@ html {
 	flex-basis: 50px;
 }
 
-#text-field {
+.text-field {
 	flex-grow: 1;
 	min-width: 0px;
+}
+
+.options {
+	width: calc(100% - 60px);
+	float: right;
 }
 
 #edit-panel-overlay {
 	background-color: rgba(211, 211, 211, 0.7);
 	/* fill the space */
-}
-
-#text-field {
-	padding-left: 10px;
 }
 
 #status-bar {
