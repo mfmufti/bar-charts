@@ -1,0 +1,11 @@
+.status-bar {
+	padding: 10px;
+	background-color: lightgrey;
+	position: relative;
+}
+
+.status-bar-right {
+	position: absolute;
+	right: 0px;
+	padding-right: 10px;
+}

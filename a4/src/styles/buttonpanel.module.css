@@ -1,0 +1,20 @@
+.button-panel {
+	padding: 10px;
+	background-color: lightgrey;
+	position: relative;
+}
+
+.button-panel .button {
+	margin-right: 10px;
+}
+
+.button-panel > .right-buttons {
+	right: 0px;
+	position: absolute;
+	display: inline-block;
+}
+
+.button {
+	height: 28px;
+	width: 80px;
+}

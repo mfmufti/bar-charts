@@ -1,0 +1,4 @@
+.options {
+	width: calc(100% - 60px);
+	float: right;
+}

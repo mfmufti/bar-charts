@@ -1,0 +1,30 @@
+.edit-panel {
+	width: 200px;
+	background-color: whitesmoke;
+	border-color: black;
+	border-width: 1px;
+	padding: 10px;
+	box-sizing: border-box;
+	margin-left: 10px;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+	position: relative;
+	overflow-y: auto;
+	flex-shrink: 0;
+}
+
+.text-field-wrapper {
+	display: flex;
+	width: 100%;
+	margin-bottom: 5px;
+}
+
+.text-field-wrapper > label {
+	padding-right: 10px;
+	width: 50px;
+	text-align: right;
+	flex-shrink: 0;
+	flex-grow: 0;
+	flex-basis: 50px;
+}
