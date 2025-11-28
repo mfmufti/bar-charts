@@ -30,6 +30,7 @@ export function Options({
 			class={styles["options"]}
 			onChange={onChange}
 			disabled={disabled}
+			value={labels[selectedIndex]}
 		>
 			{labels.map((label, i) => (
 				<option key={i}>{label}</option>
