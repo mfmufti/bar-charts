@@ -1,9 +1,0 @@
-Version: 1.104.0 (user setup)
-Commit: f220831ea2d946c0dcb0f3eaa480eb435a2c1260
-Date: 2025-09-10T06:46:18.035Z
-Electron: 37.3.1
-ElectronBuildId: 12342881
-Chromium: 138.0.7204.235
-Node.js: 22.18.0
-V8: 13.8.258.31-electron.0
-OS: Windows_NT x64 10.0.26100
