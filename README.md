@@ -1,8 +1,7 @@
-# A4 Preact
+# Bar Charts
 
-Name: Musab Mufti  
-Email: m8mufti@uwaterloo.ca  
-Student Number: 20992846  
+<img width="969" height="687" alt="image" src="https://github.com/user-attachments/assets/2aa2e013-8bf1-4944-85a3-089daf1ee8b2" />
+
 <br>
 Notes:
 
